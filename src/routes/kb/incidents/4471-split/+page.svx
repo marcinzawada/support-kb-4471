@@ -1,0 +1,81 @@
+---
+layout: runbook
+title: '#4471 split · three problems, three tickets'
+owner: Marcin Zawada
+status: open
+reviewed: 2026-11-01
+signature: Marcin Zawada
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import ProblemReports from '#lib/kb/ProblemReports.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+
+  const ISSUES = {
+    parser: 'https://github.com/marcinzawada/support-kb-4471/issues/1',
+    hint: 'https://github.com/marcinzawada/support-kb-4471/issues/2',
+    'one-day': 'https://github.com/marcinzawada/support-kb-4471/issues/3',
+  };
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Read report by report, it is
+not one issue. Its reports share a subject line, because the desk merges on subject alone
+([decision 0001](/kb/decisions/0001-dedupe-by-subject)), but they come from three different
+problems. The queued parser fix closes only the first one.
+
+<Callout kind="warn">
+#4471 is not one bug. Each problem below now has its own ticket, with the reports it covers.
+</Callout>
+
+## The split
+
+<ProblemTable ticket={4471} issues={ISSUES} />
+
+Every count on this page is computed from the ticket export at render time (`#lib/kb/split.ts`),
+so it follows the queue as the desk keeps merging.
+
+## The problems
+
+### `parser`: the shared parser reads dates month first
+
+A tenant that writes the day first types 7 April as `07/04`; the shared parser reads it as 4 July.
+Every channel of a day-first tenant hits it, except a booking-v3 form, which reads the tenant's
+way. This is the bug #4471 describes, and the queued fix is for this one.
+
+<ProblemReports ticket={4471} problem="parser" />
+
+### `hint`: the booking-v3 form tells people to type month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. The tenant's people do what it says and type
+month first; the form reads the date the tenant's way, day first. The month flips the same way,
+so the body of the report looks like `parser`, but the parser fix does not touch it: the fix is
+the hint on the form. Only form reports from booking-v3 tenants have it.
+
+<ProblemReports ticket={4471} problem="hint" />
+
+### `one-day`: the date lands one day early
+
+Nothing is flipped in these. A booking moves to the day before ("Tuesday 12 May" shows as Monday
+11 May), the same meeting shows on different days in Lisbon and Toronto, an invite arrives
+before the booking was made, and one tenant sees it only in June. That is a time zone
+or daylight-saving conversion, not date order. The desk had noted these, then counted them under
+`parser` by tenant, so they would stay open after the parser fix ships.
+
+<ProblemReports ticket={4471} problem="one-day" />
+
+## Why intake's tag does not decide it
+
+Intake guesses the tag from the reporter's browser locale. The problem depends on the tenant:
+its locale and its booking form (`#lib/kb/locales.ts`). The "intake tagged" column shows where
+the two disagree.
+
+## What changes for the desk
+
+- Close #4471 against the parser fix only. Track `hint` and `one-day` in their own tickets.
+- A shared subject line is not a shared cause. Before merging into a big ticket, check the
+  tenant, its form and the channel (`causeOf` in `#lib/kb/causes.ts`), and read the body for a
+  one-day move.
+
+<RenderStamp {signature} />
