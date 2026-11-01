@@ -14,8 +14,8 @@ signature: Marcin Zawada
   import Callout from '#lib/kb/Callout.svelte';
 
   const ISSUES = {
-    parser: { url: 'https://github.com/marcinzawada/support-kb-4471/issues/1', state: 'closed' },
-    hint: { url: 'https://github.com/marcinzawada/support-kb-4471/issues/2', state: 'closed' },
+    parser: { url: 'https://github.com/marcinzawada/support-kb-4471/issues/1', state: 'closed · fixed' },
+    hint: { url: 'https://github.com/marcinzawada/support-kb-4471/issues/2', state: "closed · won't fix" },
     'one-day': { url: 'https://github.com/marcinzawada/support-kb-4471/issues/3', state: 'closed · duplicate of #1' },
   };
 </script>
@@ -26,8 +26,10 @@ not one issue. Its reports share a subject line, because the desk merges on subj
 problems. The queued parser fix closes only the first one.
 
 <Callout kind="warn">
-#4471 is not one bug. Each problem below got its own ticket, with the reports it covers. The work
-on #4471 is done, and the tickets are closed with this page.
+#4471 is not one bug. Each problem below got its own ticket, with the reports it covers.
+Engineering closed #4471 on 5 October: `parser` is fixed (`fix(dates): parse dd/mm for eu
+locales`), `hint` won't be fixed because the booking-v3 form is retired. The tickets are closed
+the same way.
 </Callout>
 
 ## The split
@@ -77,9 +79,9 @@ the two disagree.
 
 ## What changes for the desk
 
-- #4471 is closed against the parser fix only. `hint` is its own bug, with its own fix on the
-  booking-v3 form. The one-day moves are counted under `parser`, but they are a time zone bug:
-  check for them again once the parser fix ships.
+- #4471 closed against the parser fix only. `hint` closed as won't fix: the booking-v3 form is
+  retired, so its hint goes with it. The one-day moves are counted under `parser`, but they are a
+  time zone bug the parser fix does not touch: if they keep coming, they need a ticket of their own.
 - A shared subject line is not a shared cause. Before merging into a big ticket, check the
   tenant, its form and the channel (`causeOf` in `#lib/kb/causes.ts`), and read the body for a
   one-day move.
