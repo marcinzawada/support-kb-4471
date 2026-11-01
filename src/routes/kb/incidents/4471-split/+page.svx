@@ -4,7 +4,7 @@ title: '#4471 split · three problems, three tickets'
 owner: Marcin Zawada
 status: closed
 reviewed: 2026-11-01
-signature: Marcin Zawada
+signature: v1.eyJzdWIiOiI4MjUwIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1NDcyMDMsImV4cCI6MTc5MzYzMzYwM30.ri_8DGNNi1thyLTVFSvE1q61X9NOOXtPG-eY26C49m0
 ---
 
 <script>
