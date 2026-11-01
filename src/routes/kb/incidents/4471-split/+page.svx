@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 split · three problems, three tickets'
 owner: Marcin Zawada
-status: open
+status: closed
 reviewed: 2026-11-01
 signature: Marcin Zawada
 ---
@@ -14,9 +14,9 @@ signature: Marcin Zawada
   import Callout from '#lib/kb/Callout.svelte';
 
   const ISSUES = {
-    parser: 'https://github.com/marcinzawada/support-kb-4471/issues/1',
-    hint: 'https://github.com/marcinzawada/support-kb-4471/issues/2',
-    'one-day': 'https://github.com/marcinzawada/support-kb-4471/issues/3',
+    parser: { url: 'https://github.com/marcinzawada/support-kb-4471/issues/1', state: 'closed' },
+    hint: { url: 'https://github.com/marcinzawada/support-kb-4471/issues/2', state: 'closed' },
+    'one-day': { url: 'https://github.com/marcinzawada/support-kb-4471/issues/3', state: 'closed · duplicate of #1' },
   };
 </script>
 
@@ -26,7 +26,8 @@ not one issue. Its reports share a subject line, because the desk merges on subj
 problems. The queued parser fix closes only the first one.
 
 <Callout kind="warn">
-#4471 is not one bug. Each problem below now has its own ticket, with the reports it covers.
+#4471 is not one bug. Each problem below got its own ticket, with the reports it covers. The work
+on #4471 is done, and the tickets are closed with this page.
 </Callout>
 
 ## The split
@@ -34,7 +35,10 @@ problems. The queued parser fix closes only the first one.
 <ProblemTable ticket={4471} issues={ISSUES} />
 
 Every count on this page is computed from the ticket export at render time (`#lib/kb/split.ts`),
-so it follows the queue as the desk keeps merging.
+so it follows the queue as the desk keeps merging. "desk counts" is the desk's own view, the
+`CauseTable` on [#4471](/kb/incidents/4471): it files a report by its tenant, so the one-day
+moves sit under `parser`. The tickets carry the desk's counts; that is why `one-day` is closed as
+a duplicate of the `parser` ticket, and why the bug behind it still needs its own fix.
 
 ## The problems
 
@@ -73,7 +77,9 @@ the two disagree.
 
 ## What changes for the desk
 
-- Close #4471 against the parser fix only. Track `hint` and `one-day` in their own tickets.
+- #4471 is closed against the parser fix only. `hint` is its own bug, with its own fix on the
+  booking-v3 form. The one-day moves are counted under `parser`, but they are a time zone bug:
+  check for them again once the parser fix ships.
 - A shared subject line is not a shared cause. Before merging into a big ticket, check the
   tenant, its form and the channel (`causeOf` in `#lib/kb/causes.ts`), and read the body for a
   one-day move.
